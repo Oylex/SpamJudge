@@ -7,7 +7,16 @@ vendor/*
 */cache/*
 web/uploads/*
 web/bundles/*
+app/spool/*
+app/var/*
+!app/cache/.gitkeep
+!app/logs/.gitkeep
+bin/*
+build/*
 
 # Configuration files
 app/config/parameters.ini
 app/config/parameters.yml
+
+# IDE
+.idea/*

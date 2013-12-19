@@ -1,0 +1,7 @@
+parameters:
+#    oylex_spam_judge.example.class: Oylex\SpamJudgeBundle\Example
+
+services:
+#    oylex_spam_judge.example:
+#        class: %oylex_spam_judge.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

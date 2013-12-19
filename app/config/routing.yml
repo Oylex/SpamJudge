@@ -1,0 +1,3 @@
+oylex_spam_judge:
+    resource: "@OylexSpamJudgeBundle/Resources/config/routing.yml"
+    prefix:   /

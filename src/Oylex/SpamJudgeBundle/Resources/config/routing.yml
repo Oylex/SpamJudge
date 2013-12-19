@@ -1,0 +1,3 @@
+oylex_spam_judge_homepage:
+    pattern:  /
+    defaults: { _controller: OylexSpamJudgeBundle:SpamJudge:index }
