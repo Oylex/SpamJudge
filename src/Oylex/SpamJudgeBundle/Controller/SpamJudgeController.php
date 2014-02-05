@@ -4,9 +4,13 @@ namespace Oylex\SpamJudgeBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 use Oylex\SpamJudgeBundle\Entity\TokenCount;
 use Oylex\SpamJudgeBundle\Entity\TextSample;
-use Symfony\Component\HttpFoundation\Request;
+use Oylex\SpamJudgeBundle\Form\TextSampleType;
 
 /**
  * Class SpamJudgeController
@@ -17,6 +21,61 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class SpamJudgeController extends Controller
 {
+    /**
+     * @Rest\View
+     */
+    public function newAction(Request $request)
+    {
+        $em = $this->get('doctrine')->getManager();
+        $formFactory = $this->get('form.factory');
+
+        $TextSample = new TextSample();
+
+        $form = $formFactory->create(new TextSampleType(), $TextSample);
+        $form->submit($request);
+
+        if ($form->isValid()) {
+            $TextSample->setTokenProcessed(0);
+            $TextSample->setType((($this->isSpam($TextSample->getSample()))?TextSample::TYPE_SPAM:TextSample::TYPE_HAM));
+
+            $em->persist($TextSample);
+            $em->flush();
+
+            $response = new Response();
+            $response->setStatusCode(201);
+
+            $response->headers->set(
+                'Location',
+                $this->generateUrl(
+                    'oylex_spam_judge_message_get', array('id' => $TextSample->getId()),
+                    true // absolute
+                )
+            );
+
+            return $response;
+        }
+
+        return array('form' => $form);
+    }
+
+    /**
+     * @Rest\View
+     */
+    public function getAction($id)
+    {
+        $em = $this->get('doctrine')->getManager();
+
+        $textSample = $em->getRepository('OylexSpamJudgeBundle:TextSample')->find($id);
+
+        if (!$textSample instanceof TextSample) {
+            throw new NotFoundHttpException('Message not found');
+        }
+
+        return array(
+            'message' => $textSample
+        );
+    }
+
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();

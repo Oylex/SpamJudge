@@ -3,12 +3,15 @@
 namespace Oylex\SpamJudgeBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as Serializer;
 
 /**
  * TextSample
  *
  * @ORM\Table()
  * @ORM\Entity(repositoryClass="Oylex\SpamJudgeBundle\Entity\TextSampleRepository")
+ * @Serializer\ExclusionPolicy("all")
  */
 class TextSample
 {
@@ -21,6 +24,8 @@ class TextSample
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *
+     * @Serializer\Expose()
      */
     private $id;
 
@@ -28,27 +33,37 @@ class TextSample
      * @var string
      *
      * @ORM\Column(name="sample", type="text")
+     *
+     * @Assert\NotBlank()
+     *
+     * @Serializer\Expose()
      */
     private $sample;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="ip", type="string", length=255)
+     * @ORM\Column(name="ip", type="string", length=255, nullable=true)
+     *
+     * @Serializer\Expose()
      */
     private $ip;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="userAgent", type="string", length=255)
+     * @ORM\Column(name="userAgent", type="string", length=255, nullable=true)
+     *
+     * @Serializer\Expose()
      */
     private $userAgent;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="referrer", type="string", length=255)
+     * @ORM\Column(name="referrer", type="string", length=255, nullable=true)
+     *
+     * @Serializer\Expose()
      */
     private $referrer;
 
@@ -201,5 +216,13 @@ class TextSample
         return $this->tokenProcessed;
     }
 
-
+    /**
+     * @return bool
+     *
+     * @Serializer\VirtualProperty()
+     */
+    public function isSpam()
+    {
+        return $this->getType() == self::TYPE_SPAM;
+    }
 }

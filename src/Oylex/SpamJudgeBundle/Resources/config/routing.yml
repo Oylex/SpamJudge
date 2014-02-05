@@ -1,3 +1,16 @@
-oylex_spam_judge_homepage:
-    pattern:  /
-    defaults: { _controller: OylexSpamJudgeBundle:SpamJudge:index }
+#oylex_spam_judge_homepage:
+#    pattern:  /
+#    defaults: { _controller: OylexSpamJudgeBundle:SpamJudge:index }
+
+oylex_spam_judge_message_new:
+    pattern:  /messages
+    defaults: { _controller: OylexSpamJudgeBundle:SpamJudge:new, _format: json }
+    requirements:
+        _method: POST
+
+oylex_spam_judge_message_get:
+    pattern:  /messages/{id}
+    defaults: { _controller: OylexSpamJudgeBundle:SpamJudge:get, _format: json }
+    requirements:
+        _method: GET
+        id: "\d+"
